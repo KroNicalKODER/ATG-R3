@@ -5,6 +5,10 @@
     font-family: "Roboto", sans-serif;
 }
 
+body{
+    background: #25252b;
+}
+
 .full-wrapper{
     display: flex;
     justify-content: center;
@@ -40,7 +44,7 @@
 .all-cards-wrapper{
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 98%;
     /* border: 2px solid red; */
     padding-left: 2rem;
     height: 20rem;

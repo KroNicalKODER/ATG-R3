@@ -114,7 +114,7 @@ const App = () => {
             'No User Found'
             :
             filtered.map((item,index)=>(
-              <Cards key={index} user={item} />
+              <Cards key={index} user={item} mobile={mobile} />
               ))
             }
             </>
