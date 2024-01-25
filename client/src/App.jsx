@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Cards from './components/Cards'
 import axios from 'axios'
-import { UserProvider } from './Context'
+import { UserProvider, userContext } from './Context'
 
 import './App.css'
 import FullCard from './components/FullCard'
@@ -10,6 +10,7 @@ import Loader from './components/Loader'
 const App = () => {
 
   const [mobile, setMobile] = useState(false)
+  const {updateUser, currUser} = useContext(userContext)
 
   useEffect(() => {
     if(window.innerWidth <= 768){
@@ -31,6 +32,28 @@ const App = () => {
   const [filtered, setFiltered] = useState([])
   const [showLoader, setShowLoader] = useState(false)
   const [err,setErr] = useState('')
+  const [fav,setFav] = useState([])
+  const [optionErr,setOptionErr] = useState('')
+
+  const addTofavs = () => {
+    let favs = JSON.parse(localStorage.getItem('atg-favs'))
+    if(!favs) favs=[]
+    if(!favs.includes(currUser.profile.username)){
+      favs.push(currUser.profile.username)
+      setOptionErr(<span style={{color: 'green', fontSize: '0.7rem', fontWeight: '600', marginLeft: '0.7rem'}}>Added Successfully...</span>)
+    } else {
+      setOptionErr(<span style={{color: 'red', fontSize: '0.7rem', fontWeight: '600', marginLeft: '0.7rem'}}>Already Existed</span>)
+    }
+    setFav(favs);
+    localStorage.setItem("atg-favs",JSON.stringify(favs))
+
+  }
+
+  const loadFavs = () => {
+    let favs = JSON.parse(localStorage.getItem('atg-favs'))
+    if(!favs) favs = []
+    setFav(favs)
+  }
 
   const fetchUsers = async () => {
     try {
@@ -59,17 +82,26 @@ const App = () => {
     setFiltered(filteredUsers)
   }
 
+  const handleSelectChange = (e) => {
+    document.getElementById('searcher').value = e.target.value
+    handleSearchChange(e)
+  }
+
   useEffect(()=>{
     fetchUsers()
+    loadFavs();
   },[])
+
+  useEffect(()=>{
+    setOptionErr('')
+  },[currUser])
   
   return (
-    <UserProvider>
     <div className={`full-wrapper ${mobile ? 'flex-mobile' : ''}`}>
-      <div className='all-user-wrapper'>
+      <div className={`all-user-wrapper ${mobile? '': 'margin-left-mobile'}`}>
         {err}
         <div style={{fontSize: '3rem', fontWeight: '700', alignSelf: 'self-start', marginLeft:'1rem', marginBottom: '1rem'}}>JUST SEARCH EM...</div>
-        <input type="text" name="" id="" onChange={handleSearchChange} placeholder='Search by Username' style={{width: '90%', marginBottom: '1rem', padding: '6px 10px', color: 'black', fontWeight:'500'}} className="search-box" />          
+        <input type="text" name="" id="searcher" onChange={handleSearchChange} placeholder='Search by Username' style={{width: '90%', marginBottom: '1rem', padding: '6px 10px', color: 'black', fontWeight:'500'}} className="search-box" />          
         <div className='all-cards-wrapper'>
           {
             showLoader
@@ -97,6 +129,18 @@ const App = () => {
         <></>
       }
       <div className='selected-user-wrapper'> 
+        <div className="favorites" style={{marginBottom: '1rem', marginTop: '2rem'}}>
+          <select name="favs" id="" style={{color:'black', minWidth: '4.5rem',height: '100%', maxWidth: 'content-fit'}} onChange={handleSelectChange}>
+            <option value="" style={{color:'black'}}> None </option>
+            {
+              fav.map((item, index) =>(
+                <option item={item} key={index} style={{color: 'black'}}> {item} </option>
+                ))
+              }
+          </select>
+          <button onClick={addTofavs} style={{color: 'white', background: 'blue', border: 'none', padding: '7px 7px', borderRadius: '5px' ,marginLeft: '0.5rem'}}>Add To Fav</button>
+          {optionErr}
+        </div>
           {
             showLoader 
             ?
@@ -108,7 +152,6 @@ const App = () => {
           }
       </div>
     </div>
-    </UserProvider>
   )
 }
 
