@@ -9,6 +9,24 @@ import Loader from './components/Loader'
 
 const App = () => {
 
+  const [mobile, setMobile] = useState(false)
+
+  useEffect(() => {
+    if(window.innerWidth <= 768){
+      setMobile(true)
+    }
+    const handleResize = () => {
+      setMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const [allUsers,setAllUsers] = useState([])
   const [filtered, setFiltered] = useState([])
   const [showLoader, setShowLoader] = useState(false)
@@ -47,7 +65,7 @@ const App = () => {
   
   return (
     <UserProvider>
-    <div className='full-wrapper'>
+    <div className={`full-wrapper ${mobile ? 'flex-mobile' : ''}`}>
       <div className='all-user-wrapper'>
         {err}
         <div style={{fontSize: '3rem', fontWeight: '700', alignSelf: 'self-start', marginLeft:'1rem', marginBottom: '1rem'}}>JUST SEARCH EM...</div>
@@ -71,13 +89,22 @@ const App = () => {
           }
         </div>
       </div>
+      {
+        mobile
+        ?
+        <hr/>
+        :
+        <></>
+      }
       <div className='selected-user-wrapper'> 
           {
             showLoader 
             ?
             <Loader />
             :
+            <div className={`${mobile ? 'margin-top-mobile' : ''}`}>
             <FullCard/>
+            </div>
           }
       </div>
     </div>
