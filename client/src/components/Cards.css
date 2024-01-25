@@ -1,0 +1,75 @@
+@property --smallCard{
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes animate {
+    0%{
+        --smallCard: 0deg;
+    }
+    100%{
+        --smallCard: 360deg;
+    }
+}
+
+.list-avatar-img{
+    width: 2.5rem;
+    border-radius: 9px;
+    box-shadow: rgb(200, 208, 231) 3.2px 3.2px 8px 0px inset, rgb(255, 255, 255) -3.2px -3.2px 8px 0px inset;
+    border: 2px solid white;
+}
+
+
+.container{
+    height: 30px;
+    width: auto;
+    position: relative;
+    /* border: 2px solid purple; */
+    background: repeating-conic-gradient(from var(--smallCard), rgb(250, 0, 250) 0%, rgb(250, 0, 250) 5%, transparent 5%, transparent 40%, #ff2770 50%);
+    animation: animate 2s linear infinite;
+    border-radius: 0.3rem;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.7rem;
+    padding: 1rem 1rem;
+    /* box-shadow: rgb(200, 208, 231) 3.2px 3.2px 8px 0px inset, rgb(255, 255, 255) -3.2px -3.2px 8px 0px inset; */
+    align-items: center;
+    z-index: 10;
+    cursor: pointer;
+    
+    &:hover::after{
+        content: '';
+        box-shadow: rgb(250, 0, 250) 1px 1px 10px 0px inset;
+    }
+}
+
+
+.container::before{
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: repeating-conic-gradient(from var(--smallCard), #45f3ff 0%, #45f3ff 5%, transparent 5%, transparent 40%, #45f3ff 50%);
+    animation: animate 2s linear infinite;
+    animation-delay: -0.1s;
+    filter: blur(2px);
+    border-radius: 0.3rem;
+    z-index: -10;
+}
+
+.container::after{
+    content: '';
+    z-index: -10;
+    position: absolute;
+    inset: 2px;
+    background: #1b1b20;
+    border-radius: 0.3rem;
+    transition: all 0.4s linear;
+}
+
+
+.lastName{
+    margin-left: 5px;
+}
+
